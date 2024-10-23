@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 
-const AddJewelry = () => {
+interface AddJewelryProps {
+  onAddSuccess: () => void;
+}
+
+const AddJewelry = ( {onAddSuccess}: AddJewelryProps) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const AddJewelry = () => {
       },
       body: JSON.stringify({ name, description, price: parseFloat(price) }),
     });
-    router.push('/');
+    onAddSuccess();
   };
 
   return (
