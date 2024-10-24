@@ -1,12 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Pencil, Trash2 } from 'lucide-react';
 import AddJewelry from './add';
+import './page.css';
 
 interface JewelryItem {
   id: number;
@@ -64,108 +60,115 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Jewelry Collection</h1>
-        <Button 
+    <div className="container">
+      <div className="header">
+        <h1>Jewelry Collection</h1>
+        <button 
+          className="button button-primary"
           onClick={() => setShowAddForm(true)}
-          className="flex items-center gap-2"
         >
-          <Plus size={20} />
+          <svg className="icon" viewBox="0 0 24 24" width="20" height="20">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
           Add Jewelry
-        </Button>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid">
         {jewelry.map((item) => (
-          <Card key={item.id} className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <span className="text-xl">{item.name}</span>
-                <span className="text-lg font-semibold text-green-600">
+          <div key={item.id} className="card">
+            <div className="card-header">
+              <div className="card-title">
+                <span className="item-name">{item.name}</span>
+                <span className="item-price">
                   ${item.price.toFixed(2)}
                 </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">{item.description}</p>
-            </CardContent>
-            <CardFooter className="flex justify-end gap-2">
-              <Button 
-                variant="outline"
-                size="sm"
+              </div>
+            </div>
+            <div className="card-content">
+              <p className="item-description">{item.description}</p>
+            </div>
+            <div className="card-footer">
+              <button 
+                className="button button-outline"
                 onClick={() => handleEdit(item)}
-                className="flex items-center gap-1"
               >
-                <Pencil size={16} />
+                <svg className="icon" viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 Edit
-              </Button>
-              <Button 
-                variant="destructive"
-                size="sm"
+              </button>
+              <button 
+                className="button button-destructive"
                 onClick={() => handleDelete(item.id)}
-                className="flex items-center gap-1"
               >
-                <Trash2 size={16} />
+                <svg className="icon" viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3-3h6M10 11v6M14 11v6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
                 Delete
-              </Button>
-            </CardFooter>
-          </Card>
+              </button>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Edit Modal */}
       {editingItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Edit Jewelry Item</CardTitle>
-            </CardHeader>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <div className="card-header">
+              <h2 className="card-title">Edit Jewelry Item</h2>
+            </div>
             <form onSubmit={handleUpdate}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Name</label>
-                  <Input
+              <div className="card-content">
+                <div className="form-group">
+                  <label htmlFor="edit-name">Name</label>
+                  <input
+                    id="edit-name"
                     type="text"
                     value={editingItem.name}
                     onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Description</label>
-                  <Textarea
+                <div className="form-group">
+                  <label htmlFor="edit-description">Description</label>
+                  <textarea
+                    id="edit-description"
                     value={editingItem.description}
                     onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Price</label>
-                  <Input
+                <div className="form-group">
+                  <label htmlFor="edit-price">Price</label>
+                  <input
+                    id="edit-price"
                     type="number"
                     value={editingItem.price}
                     onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
                   />
                 </div>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2">
-                <Button 
+              </div>
+              <div className="card-footer">
+                <button 
                   type="button" 
-                  variant="outline"
+                  className="button button-outline"
                   onClick={() => setEditingItem(null)}
                 >
                   Cancel
-                </Button>
-                <Button type="submit">Update</Button>
-              </CardFooter>
+                </button>
+                <button type="submit" className="button button-primary">
+                  Update
+                </button>
+              </div>
             </form>
-          </Card>
+          </div>
         </div>
       )}
 
       {/* Add Modal */}
       {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-md">
+        <div className="modal-overlay">
+          <div className="modal-content">
             <AddJewelry onAddSuccess={handleAddSuccess} />
           </div>
         </div>

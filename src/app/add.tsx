@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import './add.css';
 
 interface AddJewelryProps {
   onAddSuccess: () => void;
@@ -26,15 +23,16 @@ const AddJewelry = ({ onAddSuccess }: AddJewelryProps) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Add New Jewelry</CardTitle>
-      </CardHeader>
+    <div className="card">
+      <div className="card-header">
+        <h2 className="card-title">Add New Jewelry</h2>
+      </div>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Name</label>
-            <Input
+        <div className="card-content">
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input
+              id="name"
               type="text"
               placeholder="Enter jewelry name"
               value={name}
@@ -42,18 +40,21 @@ const AddJewelry = ({ onAddSuccess }: AddJewelryProps) => {
               required
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Description</label>
-            <Textarea
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
               placeholder="Enter jewelry description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
+              rows={4}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Price</label>
-            <Input
+          <div className="form-group">
+            <label htmlFor="price">Price</label>
+            <input
+              id="price"
               type="number"
               placeholder="Enter price"
               value={price}
@@ -63,12 +64,12 @@ const AddJewelry = ({ onAddSuccess }: AddJewelryProps) => {
               required
             />
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-end gap-2">
-          <Button type="submit">Add Jewelry</Button>
-        </CardFooter>
+        </div>
+        <div className="card-footer">
+          <button type="submit" className="button">Add Jewelry</button>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 };
 
