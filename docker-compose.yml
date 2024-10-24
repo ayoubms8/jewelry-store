@@ -32,6 +32,3 @@ volumes:
 networks:
   lenet:
     driver: bridge
-
-# create .env file containing:
-# DATABASE_URL=postgres://postgres:password@localhost:5432/mydatabase
