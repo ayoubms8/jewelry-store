@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import AddJewelry from './add'; // Import the AddJewelry component
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Pencil, Trash2 } from 'lucide-react';
+import AddJewelry from './add';
 
 interface JewelryItem {
   id: number;
@@ -14,8 +18,7 @@ interface JewelryItem {
 const Home = () => {
   const [jewelry, setJewelry] = useState<JewelryItem[]>([]);
   const [editingItem, setEditingItem] = useState<JewelryItem | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false); // State to control the display of AddJewelry
-  const router = useRouter();
+  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
     fetch('/api/jewelry')
@@ -61,38 +64,112 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Jewelry List</h1>
-      <button onClick={() => setShowAddForm(true)}>Add Jewelry</button> {/* Add button to show AddJewelry form */}
-      <ul>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Jewelry Collection</h1>
+        <Button 
+          onClick={() => setShowAddForm(true)}
+          className="flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Add Jewelry
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {jewelry.map((item) => (
-          <li key={item.id}>
-            {item.name} - ${item.price}
-            <button onClick={() => handleEdit(item)}>Edit</button>
-            <button onClick={() => handleDelete(item.id)}>Delete</button>
-          </li>
+          <Card key={item.id} className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex justify-between items-center">
+                <span className="text-xl">{item.name}</span>
+                <span className="text-lg font-semibold text-green-600">
+                  ${item.price.toFixed(2)}
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">{item.description}</p>
+            </CardContent>
+            <CardFooter className="flex justify-end gap-2">
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={() => handleEdit(item)}
+                className="flex items-center gap-1"
+              >
+                <Pencil size={16} />
+                Edit
+              </Button>
+              <Button 
+                variant="destructive"
+                size="sm"
+                onClick={() => handleDelete(item.id)}
+                className="flex items-center gap-1"
+              >
+                <Trash2 size={16} />
+                Delete
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
-      </ul>
+      </div>
+
+      {/* Edit Modal */}
       {editingItem && (
-        <form onSubmit={handleUpdate}>
-          <input
-            type="text"
-            value={editingItem.name}
-            onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-          />
-          <textarea
-            value={editingItem.description}
-            onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-          />
-          <input
-            type="number"
-            value={editingItem.price}
-            onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-          />
-          <button type="submit">Update Jewelry</button>
-        </form>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Edit Jewelry Item</CardTitle>
+            </CardHeader>
+            <form onSubmit={handleUpdate}>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Name</label>
+                  <Input
+                    type="text"
+                    value={editingItem.name}
+                    onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Description</label>
+                  <Textarea
+                    value={editingItem.description}
+                    onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Price</label>
+                  <Input
+                    type="number"
+                    value={editingItem.price}
+                    onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
+                  />
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-end gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={() => setEditingItem(null)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit">Update</Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
       )}
-      {showAddForm && <AddJewelry onAddSuccess={handleAddSuccess} />} {/* Conditionally render AddJewelry component */}
+
+      {/* Add Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-md">
+            <AddJewelry onAddSuccess={handleAddSuccess} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
